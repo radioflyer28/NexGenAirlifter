@@ -4,7 +4,7 @@ function [] = range_payload()
 e=0.52;
 AR=7.8;
 Vcruise=442; %knots from .77mach @ 37000ft
-Cd0=0.015;
+Cd0=0.02;
 sfc_cruise_s=0.6;
 
 LD=LDcruise(Cd0,AR,e);
