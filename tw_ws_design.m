@@ -78,7 +78,6 @@ contour(WSt,TWt,Wt,[1e6,1.2e6,1.4e6],'ShowText','on','LineColor','m');
 %% Range
 % g=32.2; %ft/s^2
 % sfc_cruise=0.6;
-% LDcruise= @(Cd0,AR,e) 0.943 * 1./(4.*Cd0./(pi.*AR.*e)).^0.5;
 % Range = Vcruise/g/sfc_cruise*LDcruise(Cd0,AR,e)*log(WSt.*TWt);
 % contour(WSt,TWt,Range,[4e3,6e3,8e3],'ShowText','on','LineColor','m')
 
