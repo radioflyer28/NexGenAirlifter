@@ -1,3 +1,4 @@
+% INCOMPLETE, this will later be some optimization code
 function [X,P,S,TR,accel,GG] = akriz_ver()
     clear; clc; close all;
     Method = {'Weighted Sum','Global Criterion','Goal Attain','MiniMax'};
