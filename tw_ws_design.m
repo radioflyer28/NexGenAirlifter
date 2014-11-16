@@ -14,22 +14,22 @@ sfc_cruise_s=0.5;
 [rho,a,~,~,~,~]=stdatmo(cruise_alt,0,'US',true); %rho = slugs/cuft, a = ft/s
 Vcruise=cruise_mach*a*3600/6076; %knots
 
-e=oswald(fuse_wing_ratio,AR,taper_ratio_opt,sweep_qtr_chord,dihedral,cruise_mach,Cd0);
+e_cruise=oswald(fuse_wing_ratio,AR,taper_ratio_opt,sweep_qtr_chord,dihedral,cruise_mach,Cd0);
 % e=0.52; %optional override
 
-LD=LDcruise(Cd0,AR,e);
+LD=LDcruise(Cd0,AR,e_cruise);
 % LD=20; %optional override
 
-CLmax=3;
-CLto=2.5;
+CLmax=3.5;
+CLto=3.5;
 CLldg=CLmax;
-Vstall=115;  %Same as C-5
+Vstall=120;  %Same as C-5
 Vtakeoff=1.1*Vstall;
 Vclimb1=1.2*Vstall; %climb speed immediately after takeoff
 Vclimb2=200; %used in time to climb calculation
-Vlanding=1.1*Vstall;
-Vref=Vstall*1.3;
-K=1/(pi*e*AR);
+Vtd=1.1*Vstall; %landing touchdown speed
+Vref=Vstall*1.2; %approach speed for MIL spec, normally 1.3*Vso for civilian
+K=1/(pi*e_cruise*AR);
 
 rhoSL=0.002377;
 % [rho,a,temp,press,kvisc,ZorH]=stdatmo(H_in,Toffset,Units,GeomFlag);
@@ -53,6 +53,10 @@ h2 = 32000; %finishing alt
 % climbTime = 20*60; %20minutes in seconds
 % climbRate = Hceil*log((Hceil-h1)/(Hceil-h2))/climbTime;
 
+[~,a,~,~,~,~]=stdatmo(h2/2,0,'US',true); %rho = slugs/cuft, a = ft/s
+climb_mach = Vclimb2/a;
+e_climb=oswald(fuse_wing_ratio,AR,taper_ratio_opt,sweep_qtr_chord,dihedral,climb_mach,Cd0);
+K=1/(pi*e_climb*AR);
 climbRate=Vclimb2.*(TWt-(Pdyn*Cd0./WSt+K/Pdyn.*WSt));
 climbTime = Hceil*log((Hceil-h1)/(Hceil-h2))./climbRate/60;
 % climbRate = 1850/60; %override ceiling determination...
@@ -67,8 +71,8 @@ contour(WSt,TWt,climbTime,[10,15,20],'ShowText','on','LineColor','c')
 %more robust method but may contain errors in takeoff_dist function - needs
 %checking
 
-STO=takeoff_roll(TWt,WSt,rho,CLto,e,AR,0.025,Cd0); %this is takeoff ground run...
-contour(WSt,TWt,STO,[3e3,6e3,9e3],'ShowText','on','LineColor','k');
+STO=takeoff_roll(TWt,WSt,rho,CLto,e_cruise,AR,0.025,Cd0); %this is takeoff ground run...
+% contour(WSt,TWt,STO,[3e3,6e3,9e3],'ShowText','on','LineColor','k');
 
 
 %% landing distance
@@ -102,7 +106,7 @@ contour(WSt,TWt,Wt,[1e6,1.2e6,1.4e6],'ShowText','on','LineColor','m');
 
 %simple t/o dist calc using takeoff parameter looked up from graph...
 sigma=rho/rhoSL;
-TOP = 230; %from 4-engine balanced field takeoff for 8000ft from performance slides
+TOP = 240; %from 4-engine balanced field takeoff for 8000ft from performance slides
 TW=WS/(TOP*sigma*CLto);
 hatchedline(WS,TW,'b');
 TOP = 360; %over 50ft obstacle 8000ft takeoff distance from performance slides
@@ -144,5 +148,5 @@ plot(WS, TW,'g');
 xlabel('W/S (lb/sqft)','FontWeight','bold','FontSize',12);
 ylabel('T/W','FontWeight','bold','FontSize',12);
 axis([20 200 0.1 0.6])
-legend('Minutes to climb to FL320 @ 200keas','T/O GR @ 10kftMSL ISA+27degC','Landing Distance @ 10kftMSL ISA+27degC','MTOW for 262ft span limit','MTOW for 4x GE-90 engines','8kft BFL @ 10kftMSL ISA+27degC','8kft T/O Dist over 50ft @ 10kftMSL ISA+27degC',strcat(strcat('V_s_o =',num2str(Vstall)),'keas'),'2 Engine climb after T/O')
-
+legend('Minutes to climb to FL320 @ 200keas','Landing Distance @ 10kftMSL ISA+27degC','MTOW for 262ft span limit','MTOW for 4x GE-90 engines','8kft BFL @ 10kftMSL ISA+27degC','8kft T/O Dist over 50ft @ 10kftMSL ISA+27degC',strcat(strcat('V_s_o =',num2str(Vstall)),'keas'),'2 Engine climb after T/O')
+% 'T/O GR @ 10kftMSL ISA+27degC'
