@@ -1,0 +1,21 @@
+%drag_body.m
+function [] = cd0_body()
+
+sref=19500;
+L=200;
+D=32;
+SB=pi*D^2/4;
+SS=L*pi*D;
+
+[rho,a,temp,press,v,ZorH]=stdatmo(37000,0,'US',true);
+M=0.77;
+u=M*a;
+
+CDF = cf_flatplate(reynolds(u,L,v));
+CDp = CDF * ( 60/(L/D)^3 + 0.0025*(L/D) ) * (SS/SB);
+Cpb = -0.015;
+CDb = -Cpb*(db/D)^2;
+
+Cd0B= CDF + CDp + CDb + CDW;
+
+end

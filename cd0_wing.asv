@@ -1,0 +1,23 @@
+%drag_wing.m
+function [] = cd0_wing()
+
+    [rho,a,temp,press,v,ZorH]=stdatmo(37000,0,'US',true);
+    u=0.77*a;
+    chord=262/7.75;
+    thickness=0.1*chord;
+    cfw = cf_flatplate(reynolds(u,chord,v));
+    sref=19500;
+    swet=2*sref;
+    R=1.1;
+
+    cd0w_subsonic = cfw*(1+L()*(thickness/chord)+100*(thickness/chord)^4)*R*swet/sref
+    
+    CDW = cdw_c / cos(25*pi/180)^2.5
+    
+    cd0w_transonic = cfw*(1+L()*(thickness/chord))*R*swet/sref + CDW
+
+end
+
+function thickness_parameter = L()
+    thickness_parameter = 1.2;
+end
