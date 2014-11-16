@@ -18,11 +18,11 @@ f=@(taper_ratio) 0.0524.*taper_ratio.^4 - 0.15.*taper_ratio.^3 + 0.1659.*taper_r
 %swept wing into taper ratio effect of unswept wing
 delta_taper_ratio = -0.357 + 0.45.*exp(1).^(-0.0375.*sweep_qtr_chord);
 
-e_theo = 1/(1+f(taper_ratio-delta_taper_ratio)*AR);
+e_theo = 1./(1+f(taper_ratio-delta_taper_ratio).*AR);
 
 %% Dihedral correction
 
-keG = (1/cos(dihedral.*pi/180)).^2;
+keG = (1./cos(dihedral.*pi./180)).^2;
 
 %% Fuselage wing interference correction
 % dF_ov_b = dF/b; %fuselage diameter divided by wingspan, typical value = 0.114 for subsonic jet transports 
@@ -39,7 +39,7 @@ if M > M_comp
 end
 
 %% Final oswald efficiency based on above correction factors
-P = 0.38*C_D0;
-Q = 1/(e_theo*keF);
-e_final = keM/(Q+P*pi*AR);
-e_final = e_final*keG;
+P = 0.38.*C_D0;
+Q = 1./(e_theo.*keF);
+e_final = keM./(Q+P.*pi.*AR);
+e_final = e_final.*keG;
