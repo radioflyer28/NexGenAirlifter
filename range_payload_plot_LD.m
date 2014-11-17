@@ -6,7 +6,7 @@ sweep_qtr_chord = 25; %degrees
 taper_ratio_opt = 0.45.*exp(1).^(-0.0375.*sweep_qtr_chord);
 dihedral = 5; %degrees
 AR=7.8;
-Cd0=0.02;
+Cd0=[0.01 0.015 0.02];
 cruise_alt = 37000; %ft
 cruise_mach = 0.77;
 sfc_cruise_s=0.5;
@@ -16,14 +16,12 @@ Vcruise=cruise_mach*a*3600/6076; %knots
 e=oswald(fuse_wing_ratio,AR,taper_ratio_opt,sweep_qtr_chord,dihedral,cruise_mach,Cd0);
 % e=0.52; %optional override
 
-% LD=LDcruise(Cd0,AR,e);
-%% EDIT
-LD=[15 20 25]; %override LD estimate
+LD=LDcruise(Cd0,AR,e);
 
 %%
 s = warning('off', 'all'); %turn all warnings off
 mtow_guess=0;
-num=20;
+num=50;
 min_mtow=0;
 max_mtow=1.6e6;
 
@@ -45,11 +43,11 @@ warning(s)
 figure
 hold on
 %% EDIT
-contour(range,w_payload,w_mtow(:,:,1),[0 1.3e6],'ShowText','off','LineColor','r')
-contour(range,w_payload,w_mtow(:,:,2),[0 1.3e6],'ShowText','off','LineColor','b')
-contour(range,w_payload,w_mtow(:,:,3),[0 1.3e6],'ShowText','off','LineColor','c')
+contour(range,w_payload,w_mtow(:,:,1),[0 1.4e6],'ShowText','off','LineColor','r')
+contour(range,w_payload,w_mtow(:,:,2),[0 1.4e6],'ShowText','off','LineColor','b')
+contour(range,w_payload,w_mtow(:,:,3),[0 1.4e6],'ShowText','off','LineColor','g')
 %%
 ylabel('Payload (lbs)')
 xlabel('Range (nm)')
 zlabel('Gross Weight (lb)')
-legend('L/D 15','L/D 20','L/D 25')
+legend('Cd0 0.010','Cd0 0.015','Cd0 0.020')
